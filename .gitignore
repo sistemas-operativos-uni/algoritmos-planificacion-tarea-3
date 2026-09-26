@@ -14,3 +14,4 @@ informe/*.pdf
 # Editor
 .vscode/
 .idea/
+PROMPT.md
