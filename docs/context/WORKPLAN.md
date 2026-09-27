@@ -36,7 +36,7 @@ Fases 2 y 3 corren **en paralelo**, sin dependencia entre sí. Fase 4 no puede i
 - [ ] Documentar en el informe qué hace cada parte del código.
 - **Bloqueado por:** Fase 1 (estructura de datos definida). **Bloquea a:** Analista (Fase 4).
 ### Analista de resultados -> Adán
-- [ ] Implementar `metricas.py`: cálculo de tiempo de espera (inicio − llegada) y tiempo de respuesta (fin − llegada) por pedido y promedio, para los cuatro algoritmos.
+- [ ] Implementar `metricas.py`: cálculo de tiempo de espera (fin − llegada − duración) y tiempo de respuesta (primera atención − llegada) por pedido y promedio, para los cuatro algoritmos.
 - [ ] Verificar los cuatro algoritmos contra los valores de referencia; si alguno no cuadra, devolver observación al desarrollador correspondiente (Fase 2 o 3).
 - [ ] Armar la tabla comparativa única con los cuatro algoritmos para el informe.
 - [ ] Proponer y probar un segundo conjunto de pedidos (definido por el equipo) y verificar si la recomendación se mantiene.
@@ -47,7 +47,7 @@ Fases 2 y 3 corren **en paralelo**, sin dependencia entre sí. Fase 4 no puede i
 ## Checklist de entrega final -> Renato
 - [ ] Código fuente del simulador (los cuatro algoritmos) en el repo.
 - [ ] Estructura de datos documentada (Paso 1).
-- [ ] Diagrama de Gantt de cada algoritmo en `docs/diseno/`.
+- [x] Diagrama de Gantt de los cuatro algoritmos para el conjunto de referencia en `docs/diagrams/TIEMPOS DE ESPERA - RPTA - TAREA 3.png`.
 - [ ] Capturas de pantalla del simulador con ambos conjuntos de pedidos en `docs/capturas/`.
 - [ ] Tabla comparativa de los cuatro algoritmos (espera y respuesta promedio).
 - [ ] Recomendación final justificada con los números obtenidos, no solo con teoría.

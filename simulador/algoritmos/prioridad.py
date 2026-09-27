@@ -5,13 +5,14 @@ Planificación por prioridad (Paso 3), no expropiativa. Menor número de
 prioridad = mayor prioridad (se atiende primero).
 """
 
-from modelo_pedido import clonar, reordenar_como_original
+from modelo_pedido import clonar
 
 
 def prioridad(pedidos):
     """Devuelve (pedidos_resueltos, tramos), en el mismo formato que
     fcfs()."""
-    pendientes = clonar(pedidos)
+    pedidos = clonar(pedidos)
+    pendientes = pedidos.copy()
     listos = []
     t = 0
     tramos = []
@@ -37,4 +38,4 @@ def prioridad(pedidos):
         tramos.append((actual.id, inicio, fin))
         t = fin
 
-    return reordenar_como_original(pedidos, tramos), tramos
+    return pedidos, tramos

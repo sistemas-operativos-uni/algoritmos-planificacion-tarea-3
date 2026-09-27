@@ -31,8 +31,8 @@ PEDIDOS_PROPIOS = [
 # Valores de espera/respuesta promedio que el enunciado pide reproducir
 # con el conjunto de referencia (Pasos 2 y 3).
 REFERENCIA_ESPERADA = {
-    "FCFS": {"espera": 5.75},
-    "SJF": {"espera": 5.25},
+    "FCFS": {"espera": 5.75, "respuesta": 5.75},
+    "SJF": {"espera": 5.25, "respuesta": 5.25},
     "Round Robin (q=4)": {"espera": 9.25, "respuesta": 4.0},
-    "Prioridad": {"espera": 7.75},
+    "Prioridad": {"espera": 7.75, "respuesta": 7.75},
 }

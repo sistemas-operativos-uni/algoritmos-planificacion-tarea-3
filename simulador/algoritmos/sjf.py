@@ -5,13 +5,14 @@ Shortest Job First (Paso 2), no expropiativo: entre los pedidos ya
 llegados, siempre elige el de menor duración.
 """
 
-from modelo_pedido import clonar, reordenar_como_original
+from modelo_pedido import clonar
 
 
 def sjf(pedidos):
     """Devuelve (pedidos_resueltos, tramos), en el mismo formato que
     fcfs()."""
-    pendientes = clonar(pedidos)
+    pedidos = clonar(pedidos)
+    pendientes = pedidos.copy()
     listos = []
     t = 0
     tramos = []
@@ -39,4 +40,4 @@ def sjf(pedidos):
         tramos.append((actual.id, inicio, fin))
         t = fin
 
-    return reordenar_como_original(pedidos, tramos), tramos
+    return pedidos, tramos

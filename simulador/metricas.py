@@ -36,13 +36,19 @@ DEFINICIONES USADAS (importante para el informe):
   con el docente.
 """
 
+from math import isclose
+
 from datos_referencia import REFERENCIA_ESPERADA
 
 
 def calcular_metricas(pedidos_resueltos):
     """Devuelve, por pedido: espera y respuesta; y sus promedios."""
+    if not pedidos_resueltos:
+        raise ValueError("No se pueden calcular promedios sin pedidos.")
     filas = []
     for p in pedidos_resueltos:
+        if p.inicio_primera_atencion is None or p.finalizacion is None:
+            raise ValueError(f"El pedido {p.id} todavía no está resuelto.")
         retorno = p.finalizacion - p.llegada
         espera = retorno - p.duracion
         respuesta = p.inicio_primera_atencion - p.llegada
@@ -67,32 +73,35 @@ def imprimir_tabla(nombre, filas, prom_espera, prom_respuesta):
 
 def imprimir_gantt(nombre, tramos):
     print(f"\nDiagrama de Gantt -- {nombre}")
-    linea_ids = "|"
-    linea_tiempos = "0"
-    for tid, ini, fin in tramos:
-        ancho = max(len(tid) + 2, (fin - ini))
-        linea_ids += f" {tid} |"
-        linea_tiempos += f"{'':>{max(1, ancho - len(str(fin)))}}{fin}"
-    print(linea_ids)
-    print(linea_tiempos)
+    # Representación esquemática: cada flecha muestra su intervalo real.
+    partes = ["0"]
+    tiempo = 0
+    for identificador, inicio, fin in tramos:
+        if inicio > tiempo:
+            partes.append(f"--Inactivo--> {inicio}")
+        partes.append(f"--{identificador}--> {fin}")
+        tiempo = fin
+    print(" ".join(partes))
 
 
 def tabla_comparativa_global(resultados):
     """resultados: dict {nombre_algoritmo: (prom_espera, prom_respuesta)}"""
     print("\n=== TABLA COMPARATIVA DE LOS 4 ALGORITMOS ===")
-    print(f"{'Algoritmo':<15}{'Espera prom.':>14}{'Respuesta prom.':>17}")
+    print(f"{'Algoritmo':<22}{'Espera prom.':>14}{'Respuesta prom.':>17}")
     for nombre, (espera, respuesta) in resultados.items():
-        print(f"{nombre:<15}{espera:>14.2f}{respuesta:>17.2f}")
+        print(f"{nombre:<22}{espera:>14.2f}{respuesta:>17.2f}")
 
 
 def verificar(nombre, prom_espera, prom_respuesta):
     """Compara (prom_espera, prom_respuesta) contra REFERENCIA_ESPERADA
-    (datos_referencia.py) e imprime si coincide."""
-    esperado = REFERENCIA_ESPERADA.get(nombre, {})
-    ok = True
-    if "espera" in esperado and abs(prom_espera - esperado["espera"]) > 0.01:
-        ok = False
-    if "respuesta" in esperado and abs(prom_respuesta - esperado["respuesta"]) > 0.01:
-        ok = False
+    (datos_referencia.py); imprime y devuelve si coinciden ambas métricas."""
+    esperado = REFERENCIA_ESPERADA.get(nombre)
+    if esperado is None:
+        raise ValueError(f"No hay valores de referencia para {nombre}.")
+    ok = (
+        isclose(prom_espera, esperado["espera"], rel_tol=0, abs_tol=1e-9)
+        and isclose(prom_respuesta, esperado["respuesta"], rel_tol=0, abs_tol=1e-9)
+    )
     estado = "OK ✓" if ok else "DIFERENTE ✗"
     print(f"  Verificación {nombre}: {estado} (referencia: {esperado})")
+    return ok

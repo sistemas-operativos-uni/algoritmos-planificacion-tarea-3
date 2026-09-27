@@ -61,10 +61,13 @@ Cada pedido se representa con: identificador, tiempo de llegada, duración y pri
 - Valor de referencia a reproducir: espera promedio = 7.75.
 ### Cálculo de métricas
  
-- Tiempo de espera = tiempo de inicio de atención menos tiempo de llegada.
-- Tiempo de respuesta = tiempo de finalización menos tiempo de llegada.
+- Tiempo de espera = finalización menos llegada menos duración.
+- Tiempo de respuesta = inicio de la primera atención menos llegada.
+- Tiempo de retorno = finalización menos llegada.
 - En algoritmos no expropiativos (FCFS, SJF, Prioridad), espera y respuesta coinciden. En Round Robin, no, porque un pedido puede ser interrumpido y retomado.
 - Los resultados de los cuatro algoritmos se presentan en una sola tabla comparativa.
+> Aclaración: el enunciado original confunde espera, respuesta y retorno. Aquí se usan las definiciones del simulador, compatibles con los valores de referencia. Debe explicarse esta discrepancia en el informe y consultarse con el docente.
+
 ### Conjunto de referencia
  
 | Pedido | Llegada | Duración | Prioridad |
@@ -84,8 +87,8 @@ El equipo debe además proponer un segundo conjunto de pedidos propio y verifica
 | No expropiativo (non-preemptive) | Una vez que un proceso empieza a ejecutarse, no se interrumpe hasta terminar (FCFS, SJF, Prioridad). |
 | Expropiativo (preemptive) | El proceso en ejecución puede ser interrumpido antes de terminar (Round Robin). |
 | Quantum | Porción fija de tiempo de CPU asignada a cada proceso en Round Robin antes de pasar al siguiente. |
-| Tiempo de espera | Tiempo que un pedido pasa listo, esperando ser atendido por primera vez. |
-| Tiempo de respuesta | Tiempo total desde que el pedido llega hasta que termina de atenderse. |
+| Tiempo de espera | Tiempo total que un pedido pasa listo, esperando atención, incluidas las pausas entre turnos. |
+| Tiempo de respuesta | Tiempo desde que el pedido llega hasta que recibe atención por primera vez. |
 | Inanición (starvation) | Un proceso nunca llega a ser atendido porque siempre hay otros de mayor prioridad; riesgo característico del algoritmo por Prioridad. |
 | Envejecimiento (aging) | Técnica que incrementa gradualmente la prioridad de un proceso que ha esperado mucho, para evitar inanición. |
 | Efecto convoy | En FCFS, procesos cortos quedan atascados detrás de un proceso largo, incrementando la espera promedio del conjunto. |
@@ -105,15 +108,14 @@ algoritmos-planificacion-tarea-3/
 │   ├── main.py                (corre los 4 algoritmos y muestra la tabla)
 │   └── datos_referencia.py    (conjunto de referencia y conjunto propio del equipo)
 ├── docs/
-│   ├── diseno/                (estructura de datos, diagramas de Gantt)
-│   └── capturas/
-├── informe/
+│   ├── context/               (TAREA_SO_3.md, PROJECT.md, WORKPLAN.md)
+│   └── diagrams/              (diagramas del proyecto)
 ├── README.md
-├── WORKPLAN.md
-├── PROJECT.md
 └── .gitignore
 ```
  
+Los Gantt del conjunto de referencia están en `docs/diagrams/TIEMPOS DE ESPERA - RPTA - TAREA 3.png`. Quedan pendientes su incorporación al informe, las capturas de la VM en `docs/capturas/` y el informe PDF en `informe/`.
+
 ## 7. Flujo de trabajo (workflow)
  
 ```

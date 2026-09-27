@@ -31,38 +31,22 @@ def ejecutar_todo(pedidos, titulo, quantum=4, verificar_referencia=False):
 
     resumen = {}
 
-    resueltos, tramos = fcfs(pedidos)
-    filas, pe, pr = calcular_metricas(resueltos)
-    imprimir_tabla("FCFS", filas, pe, pr)
-    imprimir_gantt("FCFS", tramos)
-    if verificar_referencia:
-        verificar("FCFS", pe, pr)
-    resumen["FCFS"] = (pe, pr)
-
-    resueltos, tramos = sjf(pedidos)
-    filas, pe, pr = calcular_metricas(resueltos)
-    imprimir_tabla("SJF", filas, pe, pr)
-    imprimir_gantt("SJF", tramos)
-    if verificar_referencia:
-        verificar("SJF", pe, pr)
-    resumen["SJF"] = (pe, pr)
-
-    resueltos, tramos = round_robin(pedidos, quantum)
-    filas, pe, pr = calcular_metricas(resueltos)
-    nombre_rr = f"Round Robin (q={quantum})"
-    imprimir_tabla(nombre_rr, filas, pe, pr)
-    imprimir_gantt(nombre_rr, tramos)
-    if verificar_referencia:
-        verificar(nombre_rr, pe, pr)
-    resumen[nombre_rr] = (pe, pr)
-
-    resueltos, tramos = prioridad(pedidos)
-    filas, pe, pr = calcular_metricas(resueltos)
-    imprimir_tabla("Prioridad", filas, pe, pr)
-    imprimir_gantt("Prioridad", tramos)
-    if verificar_referencia:
-        verificar("Prioridad", pe, pr)
-    resumen["Prioridad"] = (pe, pr)
+    for nombre, algoritmo in (
+        ("FCFS", fcfs),
+        ("SJF", sjf),
+        (f"Round Robin (q={quantum})", round_robin),
+        ("Prioridad", prioridad),
+    ):
+        if algoritmo is round_robin:
+            resueltos, tramos = algoritmo(pedidos, quantum)
+        else:
+            resueltos, tramos = algoritmo(pedidos)
+        filas, espera, respuesta = calcular_metricas(resueltos)
+        imprimir_tabla(nombre, filas, espera, respuesta)
+        imprimir_gantt(nombre, tramos)
+        if verificar_referencia and not verificar(nombre, espera, respuesta):
+            raise ValueError(f"{nombre} no coincide con los valores de referencia.")
+        resumen[nombre] = (espera, respuesta)
 
     tabla_comparativa_global(resumen)
     return resumen

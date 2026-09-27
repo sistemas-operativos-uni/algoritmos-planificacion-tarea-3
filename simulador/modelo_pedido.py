@@ -8,7 +8,7 @@ compartidas por los cuatro algoritmos de planificación (algoritmos/).
 """
 
 from dataclasses import dataclass
-from copy import deepcopy
+from typing import Optional
 
 
 @dataclass
@@ -19,37 +19,22 @@ class Pedido:
     prioridad: int          # menor número = mayor prioridad
 
     # Campos que se completan durante la simulación
-    inicio_primera_atencion: int = None   # para tiempo de respuesta
-    finalizacion: int = None              # para tiempo de espera/retorno
+    inicio_primera_atencion: Optional[int] = None   # para tiempo de respuesta
+    finalizacion: Optional[int] = None              # para tiempo de espera/retorno
 
 
 def clonar(pedidos):
-    """Devuelve una copia independiente de la lista de pedidos, para que
-    cada algoritmo trabaje sobre su propia copia sin contaminar a los
-    demás algoritmos ni al conjunto de datos original."""
-    return deepcopy(pedidos)
-
-
-def por_id(pedidos):
-    """Devuelve un diccionario {id: Pedido} para acceso rápido por id."""
-    return {p.id: p for p in pedidos}
-
-
-def reordenar_como_original(pedidos_originales, tramos):
-    """Reconstruye la lista de Pedido con los resultados (inicio de la
-    primera atención y finalización) en el mismo orden del conjunto
-    original, a partir de los tramos (id, inicio, fin) calculados por
-    un algoritmo que puede atender un pedido en más de un tramo (o, en
-    el caso de SJF/Prioridad, en uno solo)."""
-    por_id_tramo = {}
-    for tid, ini, fin in tramos:
-        por_id_tramo.setdefault(tid, []).append((ini, fin))
-
-    resultado = []
-    for original in pedidos_originales:
-        copia = deepcopy(original)
-        apariciones = por_id_tramo[original.id]
-        copia.inicio_primera_atencion = apariciones[0][0]   # primera vez que corrió
-        copia.finalizacion = apariciones[-1][1]             # última vez que corrió
-        resultado.append(copia)
-    return resultado
+    """Valida la entrada común y crea pedidos sin resultados anteriores."""
+    if not pedidos:
+        raise ValueError("Se necesita al menos un pedido.")
+    for p in pedidos:
+        if not isinstance(p.id, str) or not p.id.strip():
+            raise ValueError("Cada pedido necesita un identificador no vacío.")
+        if any(type(valor) is not int for valor in (p.llegada, p.duracion, p.prioridad)):
+            raise ValueError("Llegada, duración y prioridad deben ser enteros.")
+        if p.llegada < 0 or p.duracion <= 0:
+            raise ValueError("La llegada debe ser no negativa y la duración positiva.")
+    if len({p.id for p in pedidos}) != len(pedidos):
+        raise ValueError("Los identificadores de los pedidos deben ser únicos.")
+    # Reiniciar los resultados permite reutilizar también una lista ya simulada.
+    return [Pedido(p.id, p.llegada, p.duracion, p.prioridad) for p in pedidos]
